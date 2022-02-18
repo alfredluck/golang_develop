@@ -1,3 +1,3 @@
 FROM bitnami/prometheus
 
-LABEL maintainer="Ving <ving@nivin.cn>"
+LABEL maintainer="alfredluck"
