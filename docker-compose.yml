@@ -174,3 +174,39 @@ services:
     networks:
       - backend
     restart: always
+
+  elasticsearch:
+    build:
+      context: ./elasticsearch
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m" #指定内存限制
+      - "discovery.type=single-node"     #指定单节点模式
+      - TZ=${TZ}
+    volumes:
+      - TZ=${TZ}
+      - ${DATA_PATH_HOST}/elasticsearch/data:/usr/share/elasticsearch/data
+      - ${DATA_PATH_HOST}/elasticsearch/config/elasticsearch.yml:/usr/share/config/elasticsearch.yml
+      - ${DATA_PATH_HOST}/elasticsearch/plugins:/usr/share/elasticsearch/plugins
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - backend
+    restart: always
+
+
+  kibana:
+    build:
+      context: ./kibana
+    privileged: true
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - TZ=${TZ}
+    depends_on: # 依赖容器
+      - elasticsearch
+    ports:
+      - "5601:5601"
+    networks:
+        - backend
+    restart: always
+
